@@ -8,6 +8,10 @@
 #' matrix, plotitng functions and some derived measures for quality
 #' assessment of dimensionality reductions.
 #' 
+#' Funding provided by the Department for Biogeochemical Integration,
+#' Empirical Inference of the Earth System Group, at the Max Plack
+#' Institute for Biogeochemistry, Jena.
+#' 
 #' @references
 #' Lee, J.A., Lee, J.A., Verleysen, M., 2009. Quality assessment of
 #'     dimensionality reduction: Rank-based criteria. Neurocomputing 72.

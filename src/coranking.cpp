@@ -9,16 +9,18 @@
 
 void CORANKING::coranking(const int* Ro, const int* R,
 			  const int N, int* Q) {
+
   for(int i = 0; i < (N-1)*(N-1); i++) Q[i] = 0;
-  
+
   int ind;
   int Qind;
+
   for(int i = 0; i < N; i++) {
     for(int j = 0; j < N; j++) {
-      ind = i*N + j;
+      ind = i * N + j;
       if(R[ind] > 0 && Ro[ind] > 0) {
-	Qind = (R[ind] - 1) * (N-1) + Ro[ind] - 1;
-	Q[ Qind ] += 1;
+        Qind = (R[ind] - 1) * (N - 1) + Ro[ind] - 1;
+        Q[ Qind ] += 1;
       }
     }
   }
@@ -26,45 +28,46 @@ void CORANKING::coranking(const int* Ro, const int* R,
 
 void CORANKING::rankmatrix(const double* DD,
 				  const int N, int* R) {
-  
+
   int* inds  = (int*) malloc(N * sizeof(int));
-  int* ranks = (int*) malloc(N * sizeof(int));
+  // int* ranks = (int*) malloc(N * sizeof(int));
   const double* ptr;
+
   for(int i = 0; i < N; i++) {
+
     ptr = &DD[i*N];
-    // init ranks as 0:N
+
+    // init inds as 0:N
     for(int j = 0; j < N; j++) {
-      ranks[j] = j;
+      // ranks[j] = j;
       inds[j] = j;
     }
 
     // sort ranks with respect to DD[_,i]
     std::sort(&inds[0], &inds[N],
-	      [ptr] (const int l, const int r) {
-		return ptr[l] < ptr[r];
-	      });
-    
+              [ptr] (const int l, const int r) {return ptr[l] < ptr[r];});
+
     // we are in row i so inds[0] must be i
     //std::cout << "inds[0] = " << inds[0] << "; i = " << i << std::endl;
     if(inds[0] != i) {
       // inds == {5, 6, i, ...}
       int iind = 0;
       while ( inds[iind] != i ) {
-	//std::cout << "iind = " << iind << "; N = " << N << std::endl;
-	iind++;
-	if(iind >= N) error("Error in C code: index out of range"); // can we guarantee that this will never happen?
+        //std::cout << "iind = " << iind << "; N = " << N << std::endl;
+        iind++;
+        if(iind >= N) error("Error in C code: index out of range"); // can we guarantee that this will never happen?
       }
 
       for(int j = iind; j > 0; j--) {
-	//std::cout << "j = " << j << std::endl;
-	inds[j] = inds[j-1];
+        //std::cout << "j = " << j << std::endl;
+        inds[j] = inds[j - 1];
       }
 
-      inds[0] = i;	
+      inds[0] = i;
     }
 
     for(int j = 0; j < N; j++) {
-      ranks[inds[j]] = j;
+      R[i*N + inds[j]] = j;
     }
 
     // std::cout << "DD:" << std::endl;
@@ -87,19 +90,19 @@ void CORANKING::rankmatrix(const double* DD,
     // 		     [inds] (const int l, const int r) {
     // 		       return inds[l] < inds[r];
     // 		     });
-    
+
     // put ranks in results
 
-    for(int j = 0; j < N; j++) {
-      R[i*N + j] = ranks[j];      
-    }   
+    // for(int j = 0; j < N; j++) {
+    //   R[i*N + j] = ranks[j];
+    // }
   }
   free(inds);
   inds = NULL;
-  free(ranks);
-  ranks = NULL;
+  // free(ranks);
+  // ranks = NULL;
 }
- 
+
 void CORANKING::euclidean(const double* X, const int N,
 				 const int D, double* DD) {
   //d_ij = sqrt(||x_i||^2 + ||x_j||^2 - 2pq)
@@ -108,19 +111,19 @@ void CORANKING::euclidean(const double* X, const int N,
   double* sqnorms = (double*) calloc(N, sizeof(double));
   //if(sqnorms == NULL) { printf("Memory allocation failed!\n"); exit(1); }
   if(sqnorms == NULL) throw 1;
-  
+
   for(int d = 0; d < D; d++) {
     for(int n = 0; n < N; n++) {
       sqnorms[n] += (X[d*N + n] * X[d*N + n]);
     }
   }
-  
+
   for(int n = 0; n < N; n++) {
     for(int m = 0; m < N; m++){
       DD[n*N + m] = sqnorms[n] + sqnorms[m];
     }
   }
-  
+
   double qp;
   for(int i = 0; i < N; i++) {
     DD[i*N + i] = 0;
@@ -133,7 +136,7 @@ void CORANKING::euclidean(const double* X, const int N,
       DD[j*N + i] = DD[i*N + j];
     }
   }
-  
+
   for(int i = 0; i < N*N; i++) {
     DD[i] = ( DD[i] < 0 ? 0 : std::sqrt(DD[i]) );
   }
@@ -157,10 +160,10 @@ int main () {
   int*    rank2 = (int*)    calloc( N*N,    sizeof(int) );
   int* corank = (int*) calloc( (N-1)*(N-1), sizeof(int) );
 
-  
+
   CORANKING* cr = new CORANKING();
-  
-  
+
+
   std::cout << "data1:" << std::endl;
   for(int j = 0; j < D; j++){
     for(int i = 0; i < N; i++){
@@ -168,7 +171,7 @@ int main () {
     }
     std::cout << std::endl;
   }
-  
+
   std::cout << "data2:" << std::endl;
   for(int j = 0; j < D; j++){
     for(int i = 0; i < N; i++){
@@ -186,7 +189,7 @@ int main () {
     }
     std::cout << std::endl;
   }
-  
+
   cr->euclidean(&data2[0], N, D, dist2);
 
   std::cout << "euclidean 2:" << std::endl;
@@ -196,7 +199,7 @@ int main () {
     }
     std::cout << std::endl;
   }
-  
+
   cr->rankmatrix(dist1, N, rank1);
 
   std::cout << "rank 1:" << std::endl;
@@ -206,7 +209,7 @@ int main () {
     }
     std::cout << std::endl;
   }
-  
+
   cr->rankmatrix(dist2, N, rank2);
 
   std::cout << "rank 2:" << std::endl;
@@ -227,7 +230,7 @@ int main () {
     std::cout << std::endl;
   }
 
-  
+
   delete(cr);
   free(dist1); dist1 = NULL;
   free(dist2); dist2 = NULL;
@@ -250,7 +253,7 @@ int main () {
     }
     std::cout << std::endl;
   }
-  
+
   std::cout << "data2:" << std::endl;
   for(int j = 0; j < D; j++){
     for(int i = 0; i < N; i++){
@@ -268,7 +271,7 @@ int main () {
     }
     std::cout << std::endl;
   }
-  
+
   CORANKING::euclidean(&data2[0], N, D, dist2);
 
   std::cout << "euclidean 2:" << std::endl;
@@ -278,7 +281,7 @@ int main () {
     }
     std::cout << std::endl;
   }
-  
+
   CORANKING::rankmatrix(dist1, N, rank1);
 
   std::cout << "rank 1:" << std::endl;
@@ -288,7 +291,7 @@ int main () {
     }
     std::cout << std::endl;
   }
-  
+
   CORANKING::rankmatrix(dist2, N, rank2);
 
   std::cout << "rank 2:" << std::endl;
@@ -353,18 +356,18 @@ double _dist(NumericVector x1, NumericVector x2) {
 IntegerMatrix rankmatrixCpp(NumericMatrix D) {
   IntegerVector ss(D.nrow());
   IntegerMatrix res(D.nrow(), D.nrow());
-  
+
   for(int j = 0; j < N.nrow(); j++){
     for(int i = 0; i < D.nrow(); i++) {
       ss[i] = i;
     }
-    
+
     sort(ss.begin(), ss.end(),
 	 [&](const int& a, const int& b) {
 	   return (D[a + D.nrow() * j] < D[b + D.nrow() * j]);
 	 }
     );
-    res(_, j) = ss;    
+    res(_, j) = ss;
   }
   return res;
 }

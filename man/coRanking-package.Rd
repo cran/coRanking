@@ -14,6 +14,10 @@ dimensionality reduction
 This package provides functions for calculating the co-ranking
 matrix, plotitng functions and some derived measures for quality
 assessment of dimensionality reductions.
+
+Funding provided by the Department for Biogeochemical Integration,
+Empirical Inference of the Earth System Group, at the Max Plack
+Institute for Biogeochemistry, Jena.
 }
 \references{
 Lee, J.A., Lee, J.A., Verleysen, M., 2009. Quality assessment of
@@ -23,4 +27,11 @@ Chen, L., Buja, A., 2006. Local Multidimensional
     Scaling for Nonlinear Dimension Reduction, Graph Layout and
     Proximity Analysis.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/gdkrmr/coRanking}
+  \item Report bugs at \url{https://github.com/gdkrmr/coRanking/issues}
+}
 
+}
