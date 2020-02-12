@@ -2,52 +2,49 @@
 #'
 #' Calculate the co-ranking matrix to assess the quality of a
 #' diminsionality reduction.
-#' 
-#' Calculate the coranking matrix, to assess the quality of a
-#' dimensionality reduction.  \code{Xi} is input in high dimensions,
-#' \code{X} is input in low dimensions the type of input is given in
-#' \code{input}, if \code{input = 'data'} it will be transformed into
-#' a distance matrix with the \code{dist} function, id \code{input ==
-#' 'rank'}, \code{Xi} and \code{X} are expected do be rank matrices.
-#' 
+#'
+#' Calculate the coranking matrix, to assess the quality of a dimensionality
+#' reduction. \code{Xi} is input in high dimensions, \code{X} is input in low
+#' dimensions the type of input is given in \code{input_Xi} and \code{input_X},
+#' they can be one of \code{c('data', 'dist', 'rank')}.
+#'
 #' @param Xi high dimensional data
 #' @param X low dimensional data
-#' @param input type of input (see. details)
+#' @param input_Xi type of input of Xi (see. details)
+#' @param input_X type of input of X (see. details)
 #' @param use \code{R} or \code{C} backend
 #' @return a matrix of class \code{'coranking'}
 #' @author Guido Kraemer
 #' @seealso \code{\link{rankmatrix}}
 #' @export
-coranking <- function(Xi, X, input = c("data", "dist", "rank"), use = "C"){
-    input <- match.arg(input)
-    if (input == "data"){
-        if (dim(Xi)[1] != dim(X)[1])
-            stop("number of input rows must be the same")
+coranking <- function(Xi, X,
+                      input_Xi = c("data", "dist", "rank"),
+                      input_X = input_Xi,
+                      use = "C") {
 
-        dXi <- euclidean(Xi, use)
-        dX  <- euclidean(X, use)
-        return(coranking(dXi, dX, input = "dist", use))
-    } else if (input == "dist") {
-        if ( !all.equal(dim(Xi)[1], dim(Xi)[2], dim(X)[1], dim(X)[2]) )
-            stop("input must be the same size and square matrices ",
-                 'or of class "dist"')
-        if ( !isSymmetric(Xi) || !isSymmetric(X) )
-            stop("input must be symmetric")
+  input_Xi <- match.arg(input_Xi, c("data", "dist", "rank"))
+  input_X <- match.arg(input_X, c("data", "dist", "rank"))
 
-        Ro <- rankmatrix(Xi, input = "dist", use)
-        R  <- rankmatrix(X,  input = "dist", use)
-        return(coranking(Ro, R, input = "rank", use))
-    } else if (input == "rank") {
-        if ( !all.equal(dim(Xi)[1], dim(Xi)[2], dim(X)[1], dim(X)[2]) )
-            stop("input must be the same size and square matrices")
-        if ( !is.integer(Xi) || !is.integer(X))
-            stop("input must be integer")
+  if (input_Xi == "data" || input_Xi == "dist")
+    rXi <- rankmatrix(Xi, input = input_Xi,  use = use)
+  else
+    rXi <- Xi
 
-        if (use == "C"){
-            return(coranking_C(Xi, X))
-        } else {
-            return(coranking_R(Xi, X))
-        }
-    }
-    stop('input must be one of c("data", "dist", "rank")')
+
+  if (input_X == "data" || input_X == "dist")
+    rX <- rankmatrix(X, input = input_X, use = use)
+  else
+    rX <- X
+
+
+  if (!all.equal(dim(rXi)[1], dim(rXi)[2], dim(rX)[1], dim(rX)[2]))
+    stop("input must be the same size and square matrices")
+  if (!is.integer(rXi) || !is.integer(rX))
+    stop("input must be integer")
+
+  if (use == "C") {
+    return(coranking_C(rXi, rX))
+  } else {
+    return(coranking_R(rXi, rX))
+  }
 }

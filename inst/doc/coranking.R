@@ -1,4 +1,4 @@
-## ----setup---------------------------------------------------------------
+## ----setup--------------------------------------------------------------------
 library(knitr)
 library(scatterplot3d)
 library(Rtsne)
@@ -17,12 +17,12 @@ data$col <-
         maxColorValue = 255)
 data <- as.data.frame(data, stringsAsFactors = F)
 
-## ---- fig.width = 10, fig.height = 10, out.width = "95%"-----------------
+## ---- fig.width = 10, fig.height = 10, out.width = "95%"----------------------
 scatterplot3d(data$x, data$y, data$z,
               xlab = "x", ylab = "y", zlab = "z",
               color = data$col)
 
-## ---- fig.show="hold", fig.width = 7, fig.height = 7, out.width = "45%"----
+## ---- fig.show="hold", fig.width = 7, fig.height = 7, out.width = "45%"-------
 dim.red <- list()
 ## dim.red$isomap <- isomap(dist(data[c("x","y","z")]), k = 20)
 ## dim.red$kpca <- kpca(~x + y + z, data)
@@ -37,13 +37,13 @@ plot(dim.red$pca$scores, col = data$col,
      xlab = "PCA I", ylab = "PCA II",
      main = "PCA")
 
-## ---- fig.show="hold", fig.height = 7, fig.width = 7, out.width = "45%"----
+## ---- fig.show="hold", fig.height = 7, fig.width = 7, out.width = "45%"-------
 Q.tsne <- coranking(data[c("x", "y", "z")], dim.red$tsne$Y)
 Q.pca <- coranking(data[c("x", "y", "z")], dim.red$pca$scores[, 1:2])
 imageplot(Q.tsne, main = "t-SNE")
 imageplot(Q.pca, main = "PCA")
 
-## ---- fig.show="hold", fig.width = 7, fig.height = 7, out.width = "45%"----
+## ---- fig.show="hold", fig.width = 7, fig.height = 7, out.width = "45%"-------
 lcmc.tsne <- numeric(nrow(Q.tsne))
 lcmc.pca <- numeric(nrow(Q.tsne))
 lcmc.tsne <- LCMC(Q.tsne)

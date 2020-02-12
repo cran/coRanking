@@ -4,14 +4,22 @@
 \alias{coranking}
 \title{Co-Ranking Matrix}
 \usage{
-coranking(Xi, X, input = c("data", "dist", "rank"), use = "C")
+coranking(
+  Xi,
+  X,
+  input_Xi = c("data", "dist", "rank"),
+  input_X = input_Xi,
+  use = "C"
+)
 }
 \arguments{
 \item{Xi}{high dimensional data}
 
 \item{X}{low dimensional data}
 
-\item{input}{type of input (see. details)}
+\item{input_Xi}{type of input of Xi (see. details)}
+
+\item{input_X}{type of input of X (see. details)}
 
 \item{use}{\code{R} or \code{C} backend}
 }
@@ -23,12 +31,10 @@ Calculate the co-ranking matrix to assess the quality of a
 diminsionality reduction.
 }
 \details{
-Calculate the coranking matrix, to assess the quality of a
-dimensionality reduction.  \code{Xi} is input in high dimensions,
-\code{X} is input in low dimensions the type of input is given in
-\code{input}, if \code{input = 'data'} it will be transformed into
-a distance matrix with the \code{dist} function, id \code{input ==
-'rank'}, \code{Xi} and \code{X} are expected do be rank matrices.
+Calculate the coranking matrix, to assess the quality of a dimensionality
+reduction. \code{Xi} is input in high dimensions, \code{X} is input in low
+dimensions the type of input is given in \code{input_Xi} and \code{input_X},
+they can be one of \code{c('data', 'dist', 'rank')}.
 }
 \seealso{
 \code{\link{rankmatrix}}
