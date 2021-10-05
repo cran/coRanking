@@ -30,7 +30,7 @@ data <- as.data.frame(data, stringsAsFactors = F)
 ```
 
 # Introduction
- 
+
 The co-ranking matrix is a tool to assess the quality of a dimensionality reduciton.
 
 The fishbowl data set consists of a sphere with a hole on top:
@@ -38,8 +38,8 @@ The fishbowl data set consists of a sphere with a hole on top:
 scatterplot3d(data$x, data$y, data$z,
               xlab = "x", ylab = "y", zlab = "z",
               color = data$col)
- ```
- 
+```
+
 Dimensionality reductions:
 ```{r, fig.show="hold", fig.width = 7, fig.height = 7, out.width = "45%"}
 dim.red <- list()
@@ -64,7 +64,7 @@ Q.tsne <- coranking(data[c("x", "y", "z")], dim.red$tsne$Y)
 Q.pca <- coranking(data[c("x", "y", "z")], dim.red$pca$scores[, 1:2])
 imageplot(Q.tsne, main = "t-SNE")
 imageplot(Q.pca, main = "PCA")
-```	
+```
 
 As one can observe, the t-SNE *tears* the data, points that were
 close are far apart, e.g. the upper border of the fish bowl. This is
@@ -78,34 +78,45 @@ t-SNE also tends to keep the smaller distances between points,
 i.e. values close to the diagonal are higher in the upper left part, while
 PCA keeps the larger distances, i.e. the values close to the diagonal
 on the lower right are higher.
-	
+
 # A parameter free quality measure for dimensionality reduction
-Defined by Chen and Buja (2006). A general quality measure depending on $K$
+Defined by Lueks et al. (2011). A general quality measure depending on $K$
 could be defined as:
 
-$$\text{LCMC}(K) = \frac {1}{KN} \sum_{i,j\in {1, \ldots, K}} q_{i,j} - \frac{K}{N - 1}$$
+$$Q_{NX}(K) = \frac{1}{KN} \sum_{k=1}^{K}\sum_{l=1}^{K}Q_{kl}$$
 
-```{r, fig.show="hold", fig.width = 7, fig.height = 7, out.width = "45%"}
-lcmc.tsne <- numeric(nrow(Q.tsne))
-lcmc.pca <- numeric(nrow(Q.tsne))
+The values of $Q_{NX}(K)$ are split into local and global values by 
+
+$$K_\max = \arg\max_K\text{LCMC}(K) = \arg\max_K\left(Q_{NX} - \frac{K}{N-1}\right)$$
+
+```{r, fig.show="hold", fig.width = 7, fig.height = 7}
+qnx.tsne <- coRanking:::Q_NX(Q.tsne)
+qnx.pca <- coRanking:::Q_NX(Q.pca)
 lcmc.tsne <- LCMC(Q.tsne)
 lcmc.pca <- LCMC(Q.pca)
 Kmax.tsne <- which.max(lcmc.tsne)
 Kmax.pca <- which.max(lcmc.pca)
-plot(lcmc.tsne, main = "t-SNE", xlab = "K", ylab = "LCMC", type = "l")
-plot(lcmc.pca, main = "PCA", xlab = "K", ylab = "LCMC", type = "l")
+
+yrange <- range(c(qnx.tsne, qnx.pca))
+plot(qnx.tsne, xlab = "K", ylab = expression(Q[NX]), type = "l", ylim = yrange, col = 1)
+abline(v = Kmax.tsne, col = 1, lty = 2)
+text(Kmax.tsne, mean(yrange) + 0.1, expression(K[max]), col = 1, pos = 4)
+lines(qnx.pca, main = "PCA", xlab = "K", ylab = expression(Q[NX]), ylim = 0:1, col = 2)
+abline(v = Kmax.pca, col = 2, lty = 2)
+text(Kmax.pca, mean(yrange) - 0.1, expression(K[max]), col = 2, pos = 4)
+legend("bottomright", legend = c("t-SNE", "PCA"), lty = 1, col = 1:2)
 ```
 
 $Q_\text{local}$ is the mean over the values left of the maximum,
 $Q_\text{global}$ is the mean over the values right of the maximum.
 
-* *t-SNE*: 
+* *t-SNE*:
 	+ $K_\text{max}    = `r Kmax.tsne`$
-	+ $Q_\text{local}  = `r mean(lcmc.tsne[1:Kmax.tsne])`$
-	+ $Q_\text{global} = `r mean(lcmc.tsne[(Kmax.tsne + 1):nrow(Q.tsne)])`$
-* *PCA*: 
+	+ $Q_\text{local}  = `r mean(qnx.tsne[1:Kmax.tsne])`$
+	+ $Q_\text{global} = `r mean(qnx.tsne[(Kmax.tsne + 1):nrow(Q.tsne)])`$
+* *PCA*:
 	+ $K_\text{max}    = `r Kmax.pca`$
-	+ $Q_\text{local}  = `r mean(lcmc.pca[1:Kmax.pca])`$
-	+ $Q_\text{global} = `r mean(lcmc.pca[(Kmax.pca + 1):nrow(Q.pca)])`$
-	
+	+ $Q_\text{local}  = `r mean(qnx.pca[1:Kmax.pca])`$
+	+ $Q_\text{global} = `r mean(qnx.pca[(Kmax.pca + 1):nrow(Q.pca)])`$
+
 $Q_\text{local}$ is considered to be more important than $Q_\text{global}$.

@@ -43,13 +43,20 @@ Q.pca <- coranking(data[c("x", "y", "z")], dim.red$pca$scores[, 1:2])
 imageplot(Q.tsne, main = "t-SNE")
 imageplot(Q.pca, main = "PCA")
 
-## ---- fig.show="hold", fig.width = 7, fig.height = 7, out.width = "45%"-------
-lcmc.tsne <- numeric(nrow(Q.tsne))
-lcmc.pca <- numeric(nrow(Q.tsne))
+## ---- fig.show="hold", fig.width = 7, fig.height = 7--------------------------
+qnx.tsne <- coRanking:::Q_NX(Q.tsne)
+qnx.pca <- coRanking:::Q_NX(Q.pca)
 lcmc.tsne <- LCMC(Q.tsne)
 lcmc.pca <- LCMC(Q.pca)
 Kmax.tsne <- which.max(lcmc.tsne)
 Kmax.pca <- which.max(lcmc.pca)
-plot(lcmc.tsne, main = "t-SNE", xlab = "K", ylab = "LCMC", type = "l")
-plot(lcmc.pca, main = "PCA", xlab = "K", ylab = "LCMC", type = "l")
+
+yrange <- range(c(qnx.tsne, qnx.pca))
+plot(qnx.tsne, xlab = "K", ylab = expression(Q[NX]), type = "l", ylim = yrange, col = 1)
+abline(v = Kmax.tsne, col = 1, lty = 2)
+text(Kmax.tsne, mean(yrange) + 0.1, expression(K[max]), col = 1, pos = 4)
+lines(qnx.pca, main = "PCA", xlab = "K", ylab = expression(Q[NX]), ylim = 0:1, col = 2)
+abline(v = Kmax.pca, col = 2, lty = 2)
+text(Kmax.pca, mean(yrange) - 0.1, expression(K[max]), col = 2, pos = 4)
+legend("bottomright", legend = c("t-SNE", "PCA"), lty = 1, col = 1:2)
 
