@@ -1,4 +1,4 @@
-8ea0738ffa13fc6f6124379d35229edf *DESCRIPTION
+1cae206cf912369c2ec6dfa492d04c26 *DESCRIPTION
 ae5a59342168733d9988af23c3ca4c2a *LICENSE
 af26d271990326ec7cc44410e0169010 *NAMESPACE
 f184cd7b8d8ff214c74b7e30c55823e1 *R/coranking-package.R
@@ -10,12 +10,12 @@ d81a10e3daaa3a26933adea66edb278f *R/lcmc.R
 fe0b6573318ee596d50e590fec7f18ff *R/r_nx.R
 3aa02d4b231e81a627e0ee6d973bb90b *R/rankmatrix.R
 445a3c1f795a6ef78be719e7ad5b7c99 *R/submatrix.R
-8688192979738271fdac5067dba90c4a *README.md
-42083754f127712decef28758fb4fdda *build/vignette.rds
-941a4ba018d10bb388f78d2a47a93147 *inst/CITATION
+9f4191ae44fa81984b548a5a24e8f7c9 *README.md
+22a293fc0c6f463ba5c2e2e534ea6b58 *build/vignette.rds
+f4e3a303a848f1a0b6e94c44191c70da *inst/CITATION
 1dc5067287eec995e581c824cbc155f1 *inst/doc/coranking.R
 465b307b975ae2ddde4bc95b781d6723 *inst/doc/coranking.Rmd
-a31d29e9c3921e2e9c966798b7757b1b *inst/doc/coranking.html
+616630eed5ce4dc6863b4b04d47e3900 *inst/doc/coranking.html
 2af9e522f085a2de65de4ba1b468952b *man/AUC_ln_K.Rd
 63248cd556aa93aef3f39b587a9084c3 *man/LCMC.Rd
 3afb6afb4809e58594e9999d2becb389 *man/Q_NX.Rd
