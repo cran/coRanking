@@ -1,8 +1,11 @@
 Package: coRanking
 Title: Co-Ranking Matrix
-Version: 0.2.3
-Author: Guido Kraemer
-Maintainer: Guido Kraemer <guido.kraemer@uni-leipzig.de>
+Version: 0.2.4
+Authors@R: c(
+            person("Guido", "Kraemer", email = "guido.kraemer@uni-leipzig.de", role = c("aut","cre"),
+              comment = c(ORCID = "0000-0003-4865-5041")
+            )
+           )
 Description: Calculates the co-ranking matrix to assess the
     quality of a dimensionality reduction.
 URL: https://www.guido-kraemer.com/software/coranking/
@@ -10,13 +13,15 @@ BugReports: https://github.com/gdkrmr/coRanking/issues
 License: GPL-3 | file LICENSE
 Encoding: UTF-8
 Imports: methods, graphics, stats
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.3
 Collate: 'coranking-package.R' 'coranking.R' 'coranking_internals.R'
         'lcmc.R' 'criteria.R' 'image.R' 'rankmatrix.R' 'submatrix.R'
         'r_nx.R'
 Suggests: testthat, knitr, rmarkdown, Rtsne, scatterplot3d
 VignetteBuilder: knitr
 NeedsCompilation: yes
-Packaged: 2022-02-07 15:56:12 UTC; gkraemer
+Packaged: 2023-03-20 20:20:24 UTC; gkraemer
+Author: Guido Kraemer [aut, cre] (<https://orcid.org/0000-0003-4865-5041>)
+Maintainer: Guido Kraemer <guido.kraemer@uni-leipzig.de>
 Repository: CRAN
-Date/Publication: 2022-02-07 16:10:02 UTC
+Date/Publication: 2023-03-20 21:20:02 UTC
